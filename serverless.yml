@@ -6,19 +6,19 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action: dynamodb:*
-      Resource: arn:aws:dynamodb:us-east-1:885121665536:table/bookTable
+      Resource: arn:aws:dynamodb:us-east-1:<accountId>:table/bookTable
     - Effect: Allow
       Action: dynamodb:*
-      Resource: arn:aws:dynamodb:us-east-1:885121665536:table/userTable
+      Resource: arn:aws:dynamodb:us-east-1:<accountId>:table/userTable
     - Effect: Allow
       Action: sns:*
-      Resource: arn:aws:sns:us-east-1:885121665536:NotifyCourier
+      Resource: arn:aws:sns:us-east-1:<accountId>:NotifyCourier
     - Effect: Allow
       Action: sqs:*
-      Resource: arn:aws:sqs:us-east-1:885121665536:OrdersQueue
+      Resource: arn:aws:sqs:us-east-1:<accountId>:OrdersQueue
     - Effect: Allow
       Action: states:*
-      Resource: arn:aws:states:us-east-1:885121665536:stateMachine:storeCheckoutFlow
+      Resource: arn:aws:states:us-east-1:<accountId>:stateMachine:storeCheckoutFlow
 
 plugins:
   - serverless-step-functions
@@ -40,7 +40,7 @@ functions:
     handler: handler.sqsWorker
     events:
       - sqs:
-          arn: arn:aws:sqs:us-east-1:885121665536:OrdersQueue
+          arn: arn:aws:sqs:us-east-1:<accountId>:OrdersQueue
           batchSize: 1
 
 stepFunctions:
@@ -100,7 +100,7 @@ stepFunctions:
             Type: Task
             Resource: arn:aws:states:::sqs:sendMessage.waitForTaskToken
             Parameters:
-              QueueUrl: https://sqs.us-east-1.amazonaws.com/885121665536/OrdersQueue
+              QueueUrl: https://sqs.us-east-1.amazonaws.com/<accountId>/OrdersQueue
               MessageBody:
                 Input.$: "$"
                 Token.$: "$$.Task.Token" #From the context
@@ -114,7 +114,7 @@ stepFunctions:
             Type: Task
             Resource: arn:aws:states:::sns:publish
             Parameters:
-              TopicArn: arn:aws:sns:us-east-1:885121665536:NotifyCourier
+              TopicArn: arn:aws:sns:us-east-1:<accountId>:NotifyCourier
               Message.$: "$"
             Next: Dispatched
           Dispatched:
