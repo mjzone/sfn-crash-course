@@ -127,7 +127,7 @@ module.exports.sqsWorker = async (event) => {
         let record = event.Records[0];
         var body = JSON.parse(record.body);
         /** Find a courier and attach courier information to the order */
-        let courier = "manojf.uom@gmail.com";
+        let courier = "<courier email>";
 
         // update book quantity
         await updateBookQuantity(body.Input.bookId, body.Input.quantity);
